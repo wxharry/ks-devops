@@ -27,6 +27,7 @@ import (
 	"kubesphere.io/devops/controllers/s2ibinary"
 	"kubesphere.io/devops/controllers/s2irun"
 	"kubesphere.io/devops/pkg/client/devops"
+	"kubesphere.io/devops/pkg/client/devops/jclient"
 	"kubesphere.io/devops/pkg/client/k8s"
 	"kubesphere.io/devops/pkg/client/s3"
 	"kubesphere.io/devops/pkg/informers"
@@ -35,7 +36,7 @@ import (
 )
 
 func addControllers(mgr manager.Manager, client k8s.Client, informerFactory informers.InformerFactory,
-	devopsClient devops.Interface, s3Client s3.Interface, s *options.DevOpsControllerManagerOptions,
+	devopsClient devops.Interface, jenkinsClient jclient.JenkinsClient, s3Client s3.Interface, s *options.DevOpsControllerManagerOptions,
 	stopCh <-chan struct{}) error {
 
 	kubesphereInformer := informerFactory.KubeSphereSharedInformerFactory()
@@ -67,7 +68,7 @@ func addControllers(mgr manager.Manager, client k8s.Client, informerFactory info
 			informerFactory.KubeSphereSharedInformerFactory().Devops().V1alpha3().DevOpsProjects())
 
 		devopsPipelineController = pipeline.NewController(client.Kubernetes(),
-			client.KubeSphere(), devopsClient,
+			client.KubeSphere(), devopsClient, jenkinsClient,
 			informerFactory.KubernetesSharedInformerFactory().Core().V1().Namespaces(),
 			informerFactory.KubeSphereSharedInformerFactory().Devops().V1alpha3().Pipelines())
 

@@ -13,13 +13,8 @@ import (
 )
 
 func (j *JenkinsClient) CreateProjectPipeline(projectID string, pipeline *v1alpha3.Pipeline) (string, error) {
-	core, err := GetJenkinsCore()
 	jclient := job.Client{
-		JenkinsCore: core,
-		Parent: "",
-	}
-	if err != nil {
-		return "", err
+		JenkinsCore: j.Core,
 	}
 	projectPipelineName := fmt.Sprintf("%s %s", projectID, pipeline.Spec.Pipeline.Name)
 	job, _ := jclient.GetJob(projectPipelineName)
